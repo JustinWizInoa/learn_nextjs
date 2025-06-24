@@ -1,27 +1,33 @@
 "use client"
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 function Navbar() {
 
-    const [isOpen, setIsopen] = useState(true)
+    const [isOpen, setIsopen] = useState(true);
+    const navRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
-        const mediaQuery = window.matchMedia("(min-width: 768px)");
+        const handleScroll = () => {
+            if (!navRef.current) return;
 
-        const handleResize = () => {
-            setIsopen(mediaQuery.matches);
+            if (window.scrollY > 0) {
+                navRef.current.classList.add('shadow-2xl');
+            } else {
+                navRef.current.classList.remove('shadow-2xl');
+            }
         };
 
-        handleResize();
-        mediaQuery.addEventListener("change", handleResize);
+        window.addEventListener('scroll', handleScroll);
+        handleScroll();
 
-        return () => {
-            mediaQuery.removeEventListener("change", handleResize);
-        };
+        return () => window.removeEventListener('scroll', handleScroll);
     }, []);
 
+
     return (
-        <nav className='sticky top-0 left-0 right-0 z-50 flex flex-row font-poppins border border-gray-300 bg-white'>
+        <nav
+            ref={navRef}
+            className='sticky top-0 left-0 right-0 z-50 flex flex-row font-poppins border border-gray-300 bg-white'>
             <h1 className='w-3/12 h-full py-10 text-3xl font-medium border-r-[1px] border-gray-300 px-12'>Desgy Solutions</h1>
             <ul className='w-6/12 flex flex-row justify-between gap-6 items-center px-24  border-r-[1px] border-gray-300 text-gray-600'>
                 <li>About Us</li>
